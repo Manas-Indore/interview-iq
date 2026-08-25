@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import ResumeUpload from './pages/ResumeUpload';
 
 function Home() {
   return (
@@ -31,6 +32,13 @@ function App() {
                 <Dashboard />
               </ProtectedRoute>
             }
+          />
+          <Route
+            path="/upload-resume"element={
+            <ProtectedRoute>
+            <ResumeUpload />
+            </ProtectedRoute>
+          }
           />
         </Routes>
       </BrowserRouter>
