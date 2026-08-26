@@ -2,6 +2,15 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 import pdfplumber
 import docx
 import io
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from pydantic import BaseModel
+import pdfplumber
+import docx
+import io
+from llm_service import extract_skills, generate_questions
+from schemas import ExtractedSkills
+
+
 
 app = FastAPI()
 
@@ -50,3 +59,29 @@ async def parse_resume(file: UploadFile = File(...)):
         "filename": file.filename,
         "extracted_text": extracted_text
     }
+
+class ResumeTextInput(BaseModel):
+    resume_text: str
+
+
+@app.post("/extract-skills")
+async def extract_skills_endpoint(payload: ResumeTextInput):
+    try:
+        result = extract_skills(payload.resume_text)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Skill extraction failed: {str(e)}")
+
+
+class GenerateQuestionsInput(BaseModel):
+    skills: ExtractedSkills
+    num_questions: int = 5
+
+
+@app.post("/generate-questions")
+async def generate_questions_endpoint(payload: GenerateQuestionsInput):
+    try:
+        result = generate_questions(payload.skills, payload.num_questions)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Question generation failed: {str(e)}")
