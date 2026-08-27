@@ -8,6 +8,17 @@ const resumeSchema = new mongoose.Schema({
   },
   filename: String,
   extractedText: String,
+  skills: {
+    technical_skills: [String],
+    soft_skills: [String],
+    experience_summary: String,
+    projects: [String]
+  },
+  questions: [{
+    question: String,
+    category: String,
+    difficulty: String
+  }],
   createdAt: {
     type: Date,
     default: Date.now

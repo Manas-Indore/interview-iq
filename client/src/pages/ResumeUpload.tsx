@@ -64,14 +64,34 @@ function ResumeUpload() {
         )}
 
         {result && (
-          <div className="mt-6">
-            <p className="text-green-600 font-semibold mb-2">{result.message}</p>
-            <p className="text-sm text-gray-500 mb-2">Filename: {result.resume.filename}</p>
-            <div className="bg-gray-50 p-4 rounded max-h-64 overflow-y-auto text-sm whitespace-pre-wrap">
-              {result.resume.extractedText}
+          <div className="mt-6 space-y-6">
+          <p className="text-green-600 font-semibold">{result.message}</p>
+
+          <div>
+            <h3 className="font-semibold mb-2">Extracted Skills</h3>
+            <div className="bg-gray-50 p-4 rounded text-sm">
+              <p><strong>Technical:</strong> {result.resume.skills.technical_skills.join(', ')}</p>
+              <p><strong>Soft Skills:</strong> {result.resume.skills.soft_skills.join(', ') || 'None detected'}</p>
+              <p><strong>Experience:</strong> {result.resume.skills.experience_summary}</p>
+              <p><strong>Projects:</strong> {result.resume.skills.projects.join(', ')}</p>
             </div>
           </div>
-        )}
+
+          <div>
+          <h3 className="font-semibold mb-2">Generated Interview Questions</h3>
+          <div className="space-y-3">
+            {result.resume.questions.map((q: any, idx: number) => (
+            <div key={idx} className="bg-gray-50 p-3 rounded text-sm">
+              <p className="font-medium">{idx + 1}. {q.question}</p>
+              <p className="text-gray-500 text-xs mt-1">
+                {q.category} • {q.difficulty}
+              </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+        )} 
       </div>
     </div>
   );
