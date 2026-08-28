@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
 function ResumeUpload() {
@@ -6,6 +7,16 @@ function ResumeUpload() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleStartInterview = async () => {
+    try {
+      const res = await api.post('/interview/start', { resumeId: result.resume._id });
+      navigate(`/interview/${res.data.session._id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -65,33 +76,40 @@ function ResumeUpload() {
 
         {result && (
           <div className="mt-6 space-y-6">
-          <p className="text-green-600 font-semibold">{result.message}</p>
+            <p className="text-green-600 font-semibold">{result.message}</p>
 
-          <div>
-            <h3 className="font-semibold mb-2">Extracted Skills</h3>
-            <div className="bg-gray-50 p-4 rounded text-sm">
-              <p><strong>Technical:</strong> {result.resume.skills.technical_skills.join(', ')}</p>
-              <p><strong>Soft Skills:</strong> {result.resume.skills.soft_skills.join(', ') || 'None detected'}</p>
-              <p><strong>Experience:</strong> {result.resume.skills.experience_summary}</p>
-              <p><strong>Projects:</strong> {result.resume.skills.projects.join(', ')}</p>
+            <div>
+              <h3 className="font-semibold mb-2">Extracted Skills</h3>
+              <div className="bg-gray-50 p-4 rounded text-sm">
+                <p><strong>Technical:</strong> {result.resume.skills.technical_skills.join(', ')}</p>
+                <p><strong>Soft Skills:</strong> {result.resume.skills.soft_skills.join(', ') || 'None detected'}</p>
+                <p><strong>Experience:</strong> {result.resume.skills.experience_summary}</p>
+                <p><strong>Projects:</strong> {result.resume.skills.projects.join(', ')}</p>
+              </div>
             </div>
-          </div>
 
-          <div>
-          <h3 className="font-semibold mb-2">Generated Interview Questions</h3>
-          <div className="space-y-3">
-            {result.resume.questions.map((q: any, idx: number) => (
-            <div key={idx} className="bg-gray-50 p-3 rounded text-sm">
-              <p className="font-medium">{idx + 1}. {q.question}</p>
-              <p className="text-gray-500 text-xs mt-1">
-                {q.category} • {q.difficulty}
-              </p>
+            <div>
+              <h3 className="font-semibold mb-2">Generated Interview Questions</h3>
+              <div className="space-y-3">
+                {result.resume.questions.map((q: any, idx: number) => (
+                  <div key={idx} className="bg-gray-50 p-3 rounded text-sm">
+                    <p className="font-medium">{idx + 1}. {q.question}</p>
+                    <p className="text-gray-500 text-xs mt-1">
+                      {q.category} • {q.difficulty}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              onClick={handleStartInterview}
+              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+            >
+              Start Interview
+            </button>
           </div>
-        ))}
-      </div>
-    </div>
-  </div>
-        )} 
+        )}
       </div>
     </div>
   );

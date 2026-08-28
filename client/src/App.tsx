@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ResumeUpload from './pages/ResumeUpload';
+import Interview from './pages/Interview';
+import InterviewSummary from './pages/InterviewSummary';
 
 function Home() {
   return (
@@ -39,6 +41,22 @@ function App() {
             <ResumeUpload />
             </ProtectedRoute>
           }
+          />
+          <Route
+            path="/interview/:sessionId"
+            element={
+              <ProtectedRoute>
+                <Interview />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview/:sessionId/summary"
+            element={
+              <ProtectedRoute>
+                <InterviewSummary />
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </BrowserRouter>
