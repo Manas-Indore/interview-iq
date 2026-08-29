@@ -8,6 +8,13 @@ const answerSchema = new mongoose.Schema({
   answeredAt: Date
 });
 
+const evaluationItemSchema = new mongoose.Schema({
+  score: Number,
+  strengths: String,
+  improvements: String,
+  ideal_answer_summary: String
+});
+
 const interviewSessionSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +31,11 @@ const interviewSessionSchema = new mongoose.Schema({
     type: String,
     enum: ['in-progress', 'completed'],
     default: 'in-progress'
+  },
+  evaluation: {
+    evaluations: [evaluationItemSchema],
+    overall_score: Number,
+    overall_feedback: String
   },
   startedAt: {
     type: Date,

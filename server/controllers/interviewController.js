@@ -1,3 +1,4 @@
+const axios = require('axios');
 const InterviewSession = require('../models/InterviewSession');
 const Resume = require('../models/Resume');
 
@@ -65,12 +66,28 @@ const completeInterview = async (req, res) => {
       return res.status(404).json({ message: 'Session not found' });
     }
 
+    // Call AI service to evaluate all answers
+    const qa_pairs = session.answers.map(a => ({
+      question: a.question,
+      category: a.category,
+      difficulty: a.difficulty,
+      userAnswer: a.userAnswer
+    }));
+
+    const evalResponse = await axios.post('http://localhost:8000/evaluate-answers', {
+      qa_pairs
+    });
+
+    session.evaluation = evalResponse.data;
     session.status = 'completed';
     session.completedAt = new Date();
     await session.save();
 
-    res.status(200).json({ message: 'Interview completed', session });
+    res.status(200).json({ message: 'Interview completed and evaluated', session });
   } catch (err) {
+    if (err.response) {
+      return res.status(err.response.status).json({ message: err.response.data.detail });
+    }
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
