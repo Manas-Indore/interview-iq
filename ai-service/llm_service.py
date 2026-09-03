@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from schemas import ExtractedSkills, QuestionSet
+from schemas import ExtractedSkills, QuestionSet, EvaluationResult
 
 load_dotenv()
 
@@ -51,3 +52,23 @@ Generate a mix of technical, coding, and behavioral questions appropriate for th
         "projects": ", ".join(skills.projects)
     })
     return result
+
+def evaluate_answers(qa_pairs: list) -> EvaluationResult:
+        structured_llm = llm.with_structured_output(EvaluationResult)
+
+        qa_text = "\n\n".join([
+            f"Q{i+1} ({qa['category']}, {qa['difficulty']}): {qa['question']}\nAnswer: {qa['userAnswer'] or '(No answer provided)'}"
+            for i, qa in enumerate(qa_pairs)
+        ])
+
+        prompt = ChatPromptTemplate.from_template(
+            """You are an expert technical interviewer evaluating a candidate's mock interview responses.
+
+    {qa_text}
+
+    For each question, evaluate the answer on a scale of 1-10, note strengths, areas for improvement, and briefly summarize what an ideal answer would include. Then provide an overall score (1-10) and overall feedback summarizing the candidate's performance."""
+        )
+
+        chain = prompt | structured_llm
+        result = chain.invoke({"qa_text": qa_text})
+        return result

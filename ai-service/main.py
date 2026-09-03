@@ -9,6 +9,8 @@ import docx
 import io
 from llm_service import extract_skills, generate_questions
 from schemas import ExtractedSkills
+from llm_service import extract_skills, generate_questions, evaluate_answers
+from typing import List
 
 
 
@@ -85,3 +87,21 @@ async def generate_questions_endpoint(payload: GenerateQuestionsInput):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Question generation failed: {str(e)}")
+
+class QAPair(BaseModel):
+    question: str
+    category: str
+    difficulty: str
+    userAnswer: str
+
+class EvaluateInput(BaseModel):
+    qa_pairs: List[QAPair]
+
+@app.post("/evaluate-answers")
+async def evaluate_answers_endpoint(payload: EvaluateInput):
+    try:
+        qa_pairs = [qa.dict() for qa in payload.qa_pairs]
+        result = evaluate_answers(qa_pairs)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Evaluation failed: {str(e)}")

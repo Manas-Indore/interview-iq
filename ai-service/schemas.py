@@ -14,3 +14,15 @@ class InterviewQuestion(BaseModel):
 
 class QuestionSet(BaseModel):
     questions: List[InterviewQuestion]
+
+class AnswerEvaluation(BaseModel):
+    score: int  # out of 10
+    strengths: str
+    improvements: str
+    ideal_answer_summary: str
+
+
+class EvaluationResult(BaseModel):
+    evaluations: List[AnswerEvaluation]
+    overall_score: int  # out of 10
+    overall_feedback: str
