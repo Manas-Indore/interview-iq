@@ -11,7 +11,7 @@ const app = express();
 connectDB();
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://interview-iq-gamma-ruby.vercel.app/']
+  origin: ['http://localhost:5173', 'https://interview-iq-gamma-ruby.vercel.app']
 }));
 app.use(express.json());
 
