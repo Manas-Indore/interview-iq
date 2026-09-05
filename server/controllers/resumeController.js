@@ -4,7 +4,7 @@ const Resume = require('../models/Resume');
 const crypto = require('crypto');
 const redis = require('../config/redis');
 
-const AI_SERVICE_URL = 'http://localhost:8000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
 
 const uploadResume = async (req, res) => {
   try {

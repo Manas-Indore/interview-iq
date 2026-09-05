@@ -73,8 +73,9 @@ const completeInterview = async (req, res) => {
       difficulty: a.difficulty,
       userAnswer: a.userAnswer
     }));
+    const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
 
-    const evalResponse = await axios.post('http://localhost:8000/evaluate-answers', {
+    const evalResponse = await axios.post(`${AI_SERVICE_URL}/evaluate-answers`, { 
       qa_pairs
     });
 
